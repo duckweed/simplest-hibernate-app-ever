@@ -7,7 +7,9 @@ import static org.junit.Assert.fail;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -29,6 +31,11 @@ public class SavePerson_Test {
         session.beginTransaction();
     }
 
+    @After
+    public void after(){
+        session.getTransaction().rollback();
+    }
+
 
     @Test
     public void savePerson() throws Exception {
@@ -38,21 +45,19 @@ public class SavePerson_Test {
         session.save(person);
 
         getsOnePersonWithName(expectedName);
-
-        session.getTransaction().rollback();
-//        session.close();
     }
 
 
     private void getsOnePersonWithName(String expectedName) {
         List list = session.createCriteria(Person.class).list();
-//        assertEquals("should find 1 person", 1, list.size());
-//        Person savedPerson = (Person) list.get(0);
-//        assertEquals("should get name back correctly", expectedName, savedPerson.getName());
+        assertEquals("should find 1 person", 1, list.size());
+        Person savedPerson = (Person) list.get(0);
+        assertEquals("should get name back correctly", expectedName, savedPerson.getName());
     }
 
 
     @Test
+    @Ignore
     public void aPersonHasAnAddress() throws Exception {
         fail();
     }
